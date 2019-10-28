@@ -18,7 +18,7 @@ export class Star extends Phaser.GameObjects.Sprite {
     }
 
     setPhysics() {
-        const dropSpeed = Phaser.Math.Between(this.props.dropSpeed * 0.75, this.props.dropSpeed);
+        const dropSpeed = Phaser.Math.Between(this.props.dropSpeed * 0.5, this.props.dropSpeed);
         this.body.setVelocityY(dropSpeed);
         this.body.allowGravity = false;
     }
@@ -52,7 +52,5 @@ export class Pit extends Phaser.GameObjects.Rectangle {
         this.scene.add.existing(this);
         this.scene.physics.world.enable(this);
         this.body.allowGravity = false;
-
-        console.log(this.body);
     }
 }

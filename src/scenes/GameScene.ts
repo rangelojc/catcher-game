@@ -30,7 +30,7 @@ export class GameScene extends Phaser.Scene {
         this.createPit();
         this.createStars(5);
 
-        this.setColliders();
+        this.physics.add.overlap(this.stars, this.pit, this.starFall, null, this);
     }
 
     update() {
@@ -50,7 +50,7 @@ export class GameScene extends Phaser.Scene {
     createPit() {
         this.pit = new Pit({
             x: gameconfig.width as number / 2,
-            y: gameconfig.height as number - 0,
+            y: gameconfig.height as number + 10,
             width: gameconfig.width,
             scene: this
         });
@@ -89,9 +89,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     //set methods
-    setColliders() {
-        this.physics.add.overlap(this.stars, this.pit, this.starFall, null, this);
-    }
+
 
     //interaction methods
     starFall(pit, star) {
