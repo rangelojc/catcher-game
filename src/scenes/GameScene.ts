@@ -1,5 +1,6 @@
 import { config as gameconfig } from "../config"
 import { Star, Bomb, Pit } from "../objects/prefabs";
+import { Player } from "../objects/player";
 
 import { State } from "../states/GameState"
 
@@ -7,6 +8,9 @@ export class GameScene extends Phaser.Scene {
     private stars: Phaser.GameObjects.Group;
     private bombs: Phaser.GameObjects.Group;
     private pit: Pit;
+    private player: Player
+
+    private isCreatingStar: boolean = false;
 
     private state: State = new State();
 
@@ -28,7 +32,7 @@ export class GameScene extends Phaser.Scene {
     create() {
         this.createBackground();
         this.createPit();
-        this.createStars(5);
+        this.createPlayer();
 
         this.physics.add.overlap(this.stars, this.pit, this.starFall, null, this);
     }
@@ -38,6 +42,8 @@ export class GameScene extends Phaser.Scene {
             this.physics.pause();
             return;
         }
+
+        this.spawnStars();
     }
 
     //create methods
@@ -56,7 +62,7 @@ export class GameScene extends Phaser.Scene {
         });
     }
 
-    createStars(n: number = 20, dropSpeed?) {
+    createStars(n: number = 1, dropSpeed?) {
         for (let i = 0; i < n; i++) {
             const vars = {
                 scene: this,
@@ -88,13 +94,33 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
+    createPlayer() {
+        this.player = new Player({
+            scene: this,
+            x: gameconfig.width as number / 2,
+            y: gameconfig.height as number - 20,
+            asset: "player"
+        });
+    }
+
     //set methods
 
 
     //interaction methods
     starFall(pit, star) {
         star.destroy();
+        console.log('Star to pit collision detected!');
+    }
 
-        console.log("star to pit collision detected!");
+    spawnStars() {
+        if (this.isCreatingStar == false) {
+            this.isCreatingStar = true;
+
+            setTimeout(() => {
+                this.createStars(1);
+
+                this.isCreatingStar = false;
+            }, this.state.starSpawnRate);
+        }
     }
 }

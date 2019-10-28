@@ -18,7 +18,7 @@ export class Star extends Phaser.GameObjects.Sprite {
     }
 
     setPhysics() {
-        const dropSpeed = Phaser.Math.Between(this.props.dropSpeed * 0.5, this.props.dropSpeed);
+        const dropSpeed = Phaser.Math.Between(this.props.dropSpeed * 0.6, this.props.dropSpeed);
         this.body.setVelocityY(dropSpeed);
         this.body.allowGravity = false;
     }
