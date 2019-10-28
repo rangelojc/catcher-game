@@ -7,7 +7,11 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
     init() {
+        this.scene.add.existing(this);
         this.scene.physics.world.enable(this);
+        this.body.allowGravity = false;
+
+        this.setScale(0.5);
     }
 
     setPhysics() {

@@ -35,6 +35,7 @@ export class GameScene extends Phaser.Scene {
         this.createPlayer();
 
         this.physics.add.overlap(this.stars, this.pit, this.starFall, null, this);
+        this.physics.add.overlap(this.stars, this.player, this.starCollect, null, this);
     }
 
     update() {
@@ -66,7 +67,7 @@ export class GameScene extends Phaser.Scene {
         for (let i = 0; i < n; i++) {
             const vars = {
                 scene: this,
-                x: Phaser.Math.Between(10, gameconfig.width as number - 10),
+                x: Phaser.Math.Between(20, gameconfig.width as number - 20),
                 y: 0,
                 asset: "star"
             };
@@ -98,20 +99,12 @@ export class GameScene extends Phaser.Scene {
         this.player = new Player({
             scene: this,
             x: gameconfig.width as number / 2,
-            y: gameconfig.height as number - 20,
+            y: gameconfig.height as number - 50,
             asset: "player"
         });
     }
 
-    //set methods
-
-
-    //interaction methods
-    starFall(pit, star) {
-        star.destroy();
-        console.log('Star to pit collision detected!');
-    }
-
+    //automation methods
     spawnStars() {
         if (this.isCreatingStar == false) {
             this.isCreatingStar = true;
@@ -122,5 +115,16 @@ export class GameScene extends Phaser.Scene {
                 this.isCreatingStar = false;
             }, this.state.starSpawnRate);
         }
+    }
+
+    //interaction methods
+    starFall(pit, star) {
+        star.destroy();
+        console.log('Star to pit collision detected!');
+    }
+
+    starCollect(pit, star) {
+        star.destroy();
+        console.log('Star to player collision detected!');
     }
 }
