@@ -30,16 +30,19 @@ export class GameScene extends Phaser.Scene {
     init() {
         this.stars = this.physics.add.group({ runChildUpdate: true });
         this.bombs = this.physics.add.group({ runChildUpdate: true });
+
+        this.state.set('life', 3);
     }
 
     create() {
-        this.setHUD();
         this.createBackground();
         this.createPit();
         this.createPlayer();
 
         this.physics.add.overlap(this.stars, this.pit, this.starFall, null, this);
         this.physics.add.overlap(this.stars, this.player, this.starCollect, null, this);
+
+        this.setHUD();
     }
 
     update() {
@@ -109,7 +112,10 @@ export class GameScene extends Phaser.Scene {
     }
 
     setHUD() {
-        this.hud = new HUD(this);
+        this.hud = new HUD({ scene: this });
+        this.hud.setText('life', this.state.get('life'));
+        this.hud.setText('highscore', this.state.get('highscore'));
+        this.hud.setText('score', this.state.get('score'));
     }
 
     //behavior methods
@@ -130,6 +136,7 @@ export class GameScene extends Phaser.Scene {
 
         const life = this.state.get('life') - 1;
         this.state.set('life', life);
+        this.hud.setText('life', life);
     }
 
     starCollect(pit, star) {
@@ -137,5 +144,6 @@ export class GameScene extends Phaser.Scene {
 
         const score = this.state.get('score') + 1;
         this.state.set('score', score);
+        this.hud.setText('score', score);
     }
 }

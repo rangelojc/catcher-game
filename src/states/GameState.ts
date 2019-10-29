@@ -6,11 +6,11 @@ export class State {
     public highScore: number = 0;
     public life: number = 0;
 
-    public set(key, value) {
-        this[key] = value;
-    }
-
     public get(key) {
         return this[key];
+    }
+
+    public set(key, value) {
+        this[key] = value;
     }
 }

@@ -1,59 +1,46 @@
-class BaseText extends Phaser.GameObjects.Text {
+export class HUD {
+    public group: any = {
+        life: null,
+        score: null,
+        highscore: null
+    };
+
     constructor(params) {
-        super(
-            params.scene,
-            params.x,
-            params.y,
-            params.text,
-            { fontFamily: "Segoe UI, Verdana", fontSize: "20px", color: "#111" }
+        this.addText("life", params);
+        this.addText("score", params);
+        this.addText("highscore", params);
+    }
+
+    getSpecs(key) {
+        switch (key) {
+            case "life": return { x: 10, y: 20, text: "Life: 0" }
+            case "score": return { x: 10, y: 60, text: "Score: 0" }
+            case "highscore": return { x: 10, y: 100, text: "Highscore: 0" }
+        }
+    }
+
+    addText(key, params) {
+        var newparams = Object.assign(params, this.getSpecs(key));
+        this.group[key] = params.scene.add.text(
+            newparams.x,
+            newparams.y,
+            newparams.text,
+            this.getStyle()
         );
     }
 
     getStyle() {
-        return;
+        return { fontSize: "20px", color: "#111" };
     }
 
-    set(value) {
-        this.setText(value);
-    }
-}
+    setText(key, value) {
+        let text = "";
 
-export class HUD {
-    public life: BaseText;
-    public score: BaseText;
-    public highscore: BaseText;
-
-    constructor(params) {
-        var lifeparams = this.getSpecs("life");
-        this.life = new BaseText(lifeparams);
-
-        var scoreparams = this.getSpecs("score");
-        this.score = new BaseText(scoreparams);
-
-        var highscoreparams = this.getSpecs("highscore");
-        this.highscore = new BaseText(highscoreparams);
-    }
-
-    getSpecs(type) {
-        switch (type) {
-            case "life":
-                return {
-                    x: 10,
-                    y: 20,
-                    text: "Life: 3"
-                }
-            case "score":
-                return {
-                    x: 10,
-                    y: 60,
-                    text: "Score: 0"
-                }
-            case "highscore":
-                return {
-                    x: 10,
-                    y: 100,
-                    text: "Highscore: 0"
-                }
+        switch (key) {
+            case "life": text = "Life: " + value; break;
+            case "score": text = "Score: " + value; break;
+            case "highscore": text = "High Score: " + value; break;
         }
+        this.group[key].setText(text);
     }
 }
