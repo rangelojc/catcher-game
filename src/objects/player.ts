@@ -1,6 +1,8 @@
 export class Player extends Phaser.GameObjects.Sprite {
     body!: Phaser.Physics.Arcade.Body;
 
+    private moveSpeed: number = 1000;
+
     constructor(params) {
         super(params.scene, params.x, params.y, params.asset);
         this.init();
@@ -12,35 +14,32 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.body.allowGravity = false;
 
         this.setScale(0.5);
+
+        this.setPhysics();
+        this.setControl();
     }
 
     setPhysics() {
         this.body.setCollideWorldBounds(true);
     }
 
-    setAnimation(scene) {
-        scene.anims.create({
-            key: 'left',
-            frames: scene.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
-            frameRate: 20,
-            repeat: -1
-        });
-
-        scene.anims.create({
-            key: 'turn',
-            frames: [{ key: 'dude', frame: 4 }],
-            frameRate: 20
-        });
-
-        scene.anims.create({
-            key: 'right',
-            frames: scene.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-            frameRate: 20,
-            repeat: -1
-        });
+    setControl() {
+        this.scene.input.keyboard.on('keydown-A', () => this.setMovement("left-down"), this.scene);
+        this.scene.input.keyboard.on('keyup-A', () => this.setMovement("left-up"), this.scene);
+        this.scene.input.keyboard.on('keydown-D', () => this.setMovement("right-down"), this.scene);
+        this.scene.input.keyboard.on('keyup-D', () => this.setMovement("right-up"), this.scene);
     }
 
-    move() {
-
+    setMovement(type) {
+        switch (type) {
+            case "left-down":
+                this.body.setVelocityX(-this.moveSpeed);
+                break;
+            case "right-down":
+                this.body.setVelocityX(this.moveSpeed);
+                break;
+            default:
+                this.body.setVelocityX(0);
+        }
     }
 }

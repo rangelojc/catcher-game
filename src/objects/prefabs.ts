@@ -2,7 +2,12 @@ export class Star extends Phaser.GameObjects.Sprite {
     body!: Phaser.Physics.Arcade.Body;
 
     private props: any = {
-        dropSpeed: 200
+        type: "regular",
+        dropSpeed: 200,
+
+        regular: {
+
+        }
     };
 
     constructor(params, props = {}) {
@@ -14,7 +19,6 @@ export class Star extends Phaser.GameObjects.Sprite {
         this.props.dropSpeed = props.dropSpeed || this.props.dropSpeed;
         this.scene.add.existing(this);
         this.scene.physics.world.enable(this);
-
     }
 
     setPhysics() {
@@ -26,7 +30,6 @@ export class Star extends Phaser.GameObjects.Sprite {
 
 export class Life extends Phaser.GameObjects.Image {
     body!: Phaser.Physics.Arcade.Body;
-
 }
 
 export class Bomb extends Phaser.GameObjects.Image {

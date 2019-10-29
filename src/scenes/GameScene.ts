@@ -1,6 +1,7 @@
 import { config as gameconfig } from "../config"
 import { Star, Bomb, Pit } from "../objects/prefabs";
 import { Player } from "../objects/player";
+import { HUD } from "../objects/hud";
 
 import { State } from "../states/GameState"
 
@@ -9,6 +10,8 @@ export class GameScene extends Phaser.Scene {
     private bombs: Phaser.GameObjects.Group;
     private pit: Pit;
     private player: Player
+
+    private hud: HUD;
 
     private isCreatingStar: boolean = false;
 
@@ -30,6 +33,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     create() {
+        this.setHUD();
         this.createBackground();
         this.createPit();
         this.createPlayer();
@@ -104,27 +108,34 @@ export class GameScene extends Phaser.Scene {
         });
     }
 
-    //automation methods
+    setHUD() {
+        this.hud = new HUD(this);
+    }
+
+    //behavior methods
     spawnStars() {
         if (this.isCreatingStar == false) {
             this.isCreatingStar = true;
 
             setTimeout(() => {
                 this.createStars(1);
-
                 this.isCreatingStar = false;
-            }, this.state.starSpawnRate);
+            }, this.state.get('starSpawnRate'));
         }
     }
 
-    //interaction methods
+    //interaction methodsd
     starFall(pit, star) {
         star.destroy();
-        console.log('Star to pit collision detected!');
+
+        const life = this.state.get('life') - 1;
+        this.state.set('life', life);
     }
 
     starCollect(pit, star) {
         star.destroy();
-        console.log('Star to player collision detected!');
+
+        const score = this.state.get('score') + 1;
+        this.state.set('score', score);
     }
 }
