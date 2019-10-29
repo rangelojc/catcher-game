@@ -3,7 +3,7 @@ export class Star extends Phaser.GameObjects.Sprite {
 
     private props: any = {
         type: "regular",
-        dropSpeed: 200,
+        dropSpeed: 0,
 
         regular: {
 
@@ -22,7 +22,7 @@ export class Star extends Phaser.GameObjects.Sprite {
     }
 
     setPhysics() {
-        const dropSpeed = Phaser.Math.Between(this.props.dropSpeed * 0.6, this.props.dropSpeed);
+        const dropSpeed = Phaser.Math.Between(this.props.dropSpeed * 0.9, this.props.dropSpeed);
         this.body.setVelocityY(dropSpeed);
         this.body.allowGravity = false;
     }

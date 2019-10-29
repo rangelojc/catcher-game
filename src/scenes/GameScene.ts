@@ -30,8 +30,6 @@ export class GameScene extends Phaser.Scene {
     init() {
         this.stars = this.physics.add.group({ runChildUpdate: true });
         this.bombs = this.physics.add.group({ runChildUpdate: true });
-
-        this.state.set('life', 3);
     }
 
     create() {
@@ -43,6 +41,7 @@ export class GameScene extends Phaser.Scene {
         this.physics.add.overlap(this.stars, this.player, this.starCollect, null, this);
 
         this.setHUD();
+        this.setLevel();
     }
 
     update() {
@@ -70,23 +69,31 @@ export class GameScene extends Phaser.Scene {
         });
     }
 
-    createStars(n: number = 1, dropSpeed?) {
-        for (let i = 0; i < n; i++) {
-            const vars = {
-                scene: this,
-                x: Phaser.Math.Between(20, gameconfig.width as number - 20),
-                y: 0,
-                asset: "star"
-            };
+    createStars() {
+        const w = gameconfig.width as number - 20;
+        const lastStarX = this.stars.getLast(true) ?
+            this.stars.getLast(true).x : Phaser.Math.Between(20, w);
 
-            const config = {
-                dropSpeed
-            };
+        let x1 = Phaser.Math.Between(lastStarX, w + 100);
+        let x2 = Phaser.Math.Between(20 - 100, lastStarX);
+        let x = (x1 + x2) / 2;
+        x = x < 20 ? 20 : x;
+        x = x > w - 20 ? w : x;
 
-            const star = new Star(vars, config);
-            this.stars.add(star);
-            star.setPhysics();
-        }
+        const vars = {
+            scene: this,
+            x: x,
+            y: 0,
+            asset: "star"
+        };
+
+        const config = {
+            dropSpeed: this.state.get('starDropSpeed')
+        };
+
+        const star = new Star(vars, config);
+        this.stars.add(star);
+        star.setPhysics();
     }
 
     createBombs(n: number = 1) {
@@ -116,6 +123,7 @@ export class GameScene extends Phaser.Scene {
         this.hud.setText('life', this.state.get('life'));
         this.hud.setText('highscore', this.state.get('highscore'));
         this.hud.setText('score', this.state.get('score'));
+        this.hud.setText('level', this.state.get('level'));
     }
 
     //behavior methods
@@ -124,10 +132,36 @@ export class GameScene extends Phaser.Scene {
             this.isCreatingStar = true;
 
             setTimeout(() => {
-                this.createStars(1);
+                this.createStars();
                 this.isCreatingStar = false;
             }, this.state.get('starSpawnRate'));
         }
+    }
+
+    setLevel() {
+        const score = this.state.get('score');
+        const scoreTier = this.state.get('scoreTier');
+        const currentLevel = scoreTier.findIndex((item, idx) => {
+            if (scoreTier[idx + 1]) return score >= item && score < scoreTier[idx + 1];
+            else return score >= item
+        }) + 1;
+
+        if (this.state.get('level') == currentLevel) return;
+
+        this.state.set('level', currentLevel);
+
+        const level = this.state.get('level');
+        const spawnRate = this.state.get('originalStarSpawnRate');
+        const dropSpeed = this.state.get('originalStarDropSpeed');
+
+        const newSpawnRate = spawnRate - ((level - 1) * 77);
+        const newDropSpeed = dropSpeed + ((level - 1) * 40);
+        this.state.set('starSpawnRate', newSpawnRate);
+        this.state.set('starDropSpeed', newDropSpeed);
+
+        this.hud.setText('level', level);
+
+        console.log(newSpawnRate, newDropSpeed);
     }
 
     //interaction methodsd
@@ -137,6 +171,10 @@ export class GameScene extends Phaser.Scene {
         const life = this.state.get('life') - 1;
         this.state.set('life', life);
         this.hud.setText('life', life);
+
+        if (life == 0) {
+            this.state.set('gameOver', true);
+        }
     }
 
     starCollect(pit, star) {
@@ -145,5 +183,7 @@ export class GameScene extends Phaser.Scene {
         const score = this.state.get('score') + 1;
         this.state.set('score', score);
         this.hud.setText('score', score);
+
+        this.setLevel();
     }
 }

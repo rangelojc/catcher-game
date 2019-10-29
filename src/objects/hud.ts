@@ -2,13 +2,15 @@ export class HUD {
     public group: any = {
         life: null,
         score: null,
-        highscore: null
+        highscore: null,
+        level: null,
     };
 
     constructor(params) {
         this.addText("life", params);
         this.addText("score", params);
         this.addText("highscore", params);
+        this.addText("level", params);
     }
 
     getSpecs(key) {
@@ -16,6 +18,7 @@ export class HUD {
             case "life": return { x: 10, y: 20, text: "Life: 0" }
             case "score": return { x: 10, y: 60, text: "Score: 0" }
             case "highscore": return { x: 10, y: 100, text: "Highscore: 0" }
+            case "level": return { x: 10, y: 140, text: "Level: 0" }
         }
     }
 
@@ -40,6 +43,7 @@ export class HUD {
             case "life": text = "Life: " + value; break;
             case "score": text = "Score: " + value; break;
             case "highscore": text = "High Score: " + value; break;
+            case "level": text = "Level: " + value; break;
         }
         this.group[key].setText(text);
     }
