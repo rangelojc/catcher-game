@@ -25,7 +25,7 @@ export class State {
 
     public init() {
         this.gameOver = false;
-        this.score = 200;
+        this.score = 0;
         this.highscore = 0;
         this.life = 3;
 
