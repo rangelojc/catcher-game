@@ -5,44 +5,45 @@ export class State {
     public life: number;
 
     public level: number;
-    public starSpawnRate: number;
-    public starDropSpeed: number;
+    public spawnRate: number;
+    public dropSpeed: number;
 
-    public originalStarSpawnRate: number = 1000;
-    public originalStarDropSpeed: number = 550;
+    public originalSpawnRate: number = 1000;
+    public originalDropSpeed: number = 550;
+    public spawnRateChg: number = 72;
+    public dropRateChg: number = 70;
 
     public scoreTier: number[] = [
         0, 5, 10, 15, 20, 30, 50, 60, 70, 80,
-        100, 120, 150
+        100, 120, 150, 200
     ]
 
     public log: any;
 
     constructor() {
-        this.init();
     }
 
     public init() {
         this.gameOver = false;
-        this.score = 0;
+        this.score = 200;
         this.highscore = 0;
         this.life = 3;
 
         this.level = 1;
-        this.starSpawnRate = 1000;
-        this.starDropSpeed = 550;
+        this.spawnRate = 1000;
+        this.dropSpeed = 550;
 
         this.log = [];
     }
 
     public get(key) {
         const value = this[key];
-        this.logEntry(key, value, "Get");
+        //this.logEntry(key, value, "Get");
         return value;
     }
 
     public set(key, value) {
-        this.logEntry(key, value, "Set");
+        //this.logEntry(key, value, "Set");
         this[key] = value;
     }
 
