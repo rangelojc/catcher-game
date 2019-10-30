@@ -18,9 +18,7 @@ export class GameScene extends Phaser.Scene {
     private state: State = new State();
 
     constructor() {
-        super({
-            key: "MainScene"
-        });
+        super("GameScene");
     }
 
     preload() {
