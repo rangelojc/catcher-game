@@ -42,11 +42,13 @@ export class GameScene extends Phaser.Scene {
 
         this.setHUD();
         this.setLevel();
+        this.setHighScore();
     }
 
     update() {
         if (this.state.gameOver) {
             this.physics.pause();
+            this.setHighScore();
             return;
         }
 
@@ -162,6 +164,18 @@ export class GameScene extends Phaser.Scene {
         this.hud.setText('level', level);
 
         console.log(newSpawnRate, newDropSpeed);
+    }
+
+    setHighScore() {
+        const score = this.state.get('score');
+        const highscore = localStorage.HIGH_SCORE;
+        let newhighscore = score;
+
+        if (highscore) newhighscore = score > highscore ? score : highscore;
+
+        localStorage.HIGH_SCORE = newhighscore;
+        this.state.set('highscore', newhighscore);
+        this.hud.setText('highscore', newhighscore);
     }
 
     //interaction methodsd
