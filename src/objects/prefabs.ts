@@ -55,11 +55,8 @@ export class Bomb extends Phaser.GameObjects.Image {
         const dropSpeed = Phaser.Math.Between(this.props.dropSpeed * 0.9, this.props.dropSpeed);
         this.body.setVelocityY(dropSpeed);
         this.body.allowGravity = false;
+        this.setScale(1.5);
     }
-}
-
-export class Life extends Phaser.GameObjects.Image {
-    body!: Phaser.Physics.Arcade.Body;
 }
 
 export class Pit extends Phaser.GameObjects.Rectangle {
@@ -77,4 +74,8 @@ export class Pit extends Phaser.GameObjects.Rectangle {
         this.scene.physics.world.enable(this);
         this.body.allowGravity = false;
     }
+}
+
+export class Life extends Phaser.GameObjects.Image {
+    body!: Phaser.Physics.Arcade.Body;
 }

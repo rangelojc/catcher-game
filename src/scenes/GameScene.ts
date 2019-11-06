@@ -145,8 +145,7 @@ export class GameScene extends Phaser.Scene {
     spawnObject() {
         const randomizer = Phaser.Math.Between(1, 100);
         if (randomizer > 75) this.createBombs();
-
-        this.createStars();
+        else this.createStars();
     }
 
     setLevel() {
