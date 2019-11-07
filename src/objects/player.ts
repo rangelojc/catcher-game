@@ -1,7 +1,10 @@
 export class Player extends Phaser.GameObjects.Sprite {
     body!: Phaser.Physics.Arcade.Body;
 
-    private moveSpeed: number = 1000;
+    public stats: any = {
+        movementSpeed: 1000,
+        immune: false
+    }
 
     constructor(params) {
         super(params.scene, params.x, params.y, params.asset);
@@ -33,10 +36,10 @@ export class Player extends Phaser.GameObjects.Sprite {
     setMovement(type) {
         switch (type) {
             case "left-down":
-                this.body.setVelocityX(-this.moveSpeed);
+                this.body.setVelocityX(-this.stats.movementSpeed);
                 break;
             case "right-down":
-                this.body.setVelocityX(this.moveSpeed);
+                this.body.setVelocityX(this.stats.movementSpeed);
                 break;
             default:
                 this.body.setVelocityX(0);

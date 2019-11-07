@@ -22,6 +22,11 @@
             },
             {
                 "type": "image",
+                "key": "heart",
+                "url": "./src/assets/heart.png"
+            },
+            {
+                "type": "image",
                 "key": "ground",
                 "url": "./src/assets/ground.png"
             }

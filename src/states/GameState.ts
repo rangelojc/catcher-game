@@ -1,22 +1,13 @@
+import Levels from "./Levels";
+
 export class State {
     public gameOver: boolean;
     public score: number;
     public highscore: number;
     public life: number;
 
-    public level: number;
-    public spawnRate: number;
-    public dropSpeed: number;
-
-    public originalSpawnRate: number = 1000;
-    public originalDropSpeed: number = 550;
-    public spawnRateChg: number = 72;
-    public dropRateChg: number = 70;
-
-    public scoreTier: number[] = [
-        0, 5, 10, 15, 20, 30, 50, 60, 70, 80,
-        100, 120, 150, 200
-    ]
+    public levelTiers: any = Levels;
+    public level: any;
 
     public log: any;
 
@@ -29,9 +20,7 @@ export class State {
         this.highscore = 0;
         this.life = 3;
 
-        this.level = 1;
-        this.spawnRate = 1000;
-        this.dropSpeed = 550;
+        this.level = {};
 
         this.log = [];
     }

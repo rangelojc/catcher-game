@@ -1,5 +1,6 @@
-import { config as gameconfig } from "../config"
-import { Star, Bomb, Pit } from "../objects/prefabs";
+import { config as gameconfig } from "../config";
+
+import { Star, Bomb, Heart, Pit } from "../objects/_prefabs";
 import { Player } from "../objects/player";
 import { HUD } from "../objects/hud";
 
@@ -8,12 +9,17 @@ import { State } from "../states/GameState"
 export class GameScene extends Phaser.Scene {
     private stars: Phaser.GameObjects.Group;
     private bombs: Phaser.GameObjects.Group;
+    private hearts: Phaser.GameObjects.Group;
     private pit: Pit;
     private player: Player
 
     private hud: HUD;
 
-    private isSpawning: boolean = false;
+    private isSpawning: any = {
+        star: false,
+        bomb: false,
+        heart: false
+    };
 
     private state: State = new State();
 
@@ -28,6 +34,7 @@ export class GameScene extends Phaser.Scene {
     init() {
         this.stars = this.physics.add.group({ runChildUpdate: true });
         this.bombs = this.physics.add.group({ runChildUpdate: true });
+        this.hearts = this.physics.add.group({ runChildUpdate: true });
 
         this.state.init();
     }
@@ -37,11 +44,14 @@ export class GameScene extends Phaser.Scene {
         this.createPit();
         this.createPlayer();
 
-        this.physics.add.overlap(this.stars, this.pit, this.starFall, null, this);
+        this.physics.add.overlap(this.stars, this.pit, this.destroyFallenObject, null, this);
         this.physics.add.overlap(this.stars, this.player, this.starCollect, null, this);
 
-        this.physics.add.overlap(this.bombs, this.pit, this.bombFall, null, this);
+        this.physics.add.overlap(this.bombs, this.pit, this.destroyFallenObject, null, this);
         this.physics.add.overlap(this.bombs, this.player, this.bombCollect, null, this);
+
+        this.physics.add.overlap(this.hearts, this.pit, this.destroyFallenObject, null, this);
+        this.physics.add.overlap(this.hearts, this.player, this.heartCollect, null, this);
 
         this.setHUD();
         this.setLevel();
@@ -86,7 +96,7 @@ export class GameScene extends Phaser.Scene {
         };
 
         const config = {
-            dropSpeed: this.state.get('dropSpeed')
+            dropSpeed: this.state.get('level').dropSpeed
         };
 
         const star = new Star(vars, config);
@@ -105,13 +115,33 @@ export class GameScene extends Phaser.Scene {
         };
 
         const config = {
-            dropSpeed: this.state.get('dropSpeed')
+            dropSpeed: this.state.get('level').dropSpeed
         };
 
         const bomb = new Bomb(vars, config);
         this.bombs.add(bomb);
         bomb.setPhysics();
     }
+
+    createHeart() {
+        const x = Phaser.Math.Between(20, gameconfig.width as number - 20);
+
+        const vars = {
+            scene: this,
+            x: x,
+            y: 0,
+            asset: "heart"
+        };
+
+        const config = {
+            dropSpeed: this.state.get('level').dropSpeed
+        };
+
+        const heart = new Heart(vars, config);
+        this.hearts.add(heart);
+        heart.setPhysics();
+    }
+
 
     createPlayer() {
         this.player = new Player({
@@ -132,44 +162,50 @@ export class GameScene extends Phaser.Scene {
 
     //behavior methods
     startSpawn() {
-        if (this.isSpawning == false) {
-            this.isSpawning = true;
+        Object.keys(this.isSpawning).forEach(key => {
+            if (this.isSpawning[key] == false) {
+                this.isSpawning[key] = true;
 
-            setTimeout(() => {
-                this.spawnObject();
-                this.isSpawning = false;
-            }, this.state.get('spawnRate'));
-        }
+                setTimeout(() => {
+                    this.spawnObject(key);
+                    this.isSpawning[key] = false;
+                }, this.state.get('level').spawnRate);
+            }
+        });
     }
 
-    spawnObject() {
-        const randomizer = Phaser.Math.Between(1, 100);
-        if (randomizer > 75) this.createBombs();
-        else this.createStars();
+    spawnObject(type) {
+        const chance = Phaser.Math.Between(1, 100);
+        const level = this.state.get('level');
+
+        if (type == "star") {
+            this.createStars();
+        }
+        else if (type == "bomb") {
+            if (chance > (100 - level.bombSpawnChance))
+                this.createBombs();
+        }
+        else if (type == "heart") {
+            if (chance > (100 - level.lifeSpawnChance))
+                this.createHeart();
+        }
     }
 
     setLevel() {
         const score = this.state.get('score');
-        const scoreTier = this.state.get('scoreTier');
-        const currentLevel = scoreTier.findIndex((item, idx) => {
-            if (scoreTier[idx + 1]) return score >= item && score < scoreTier[idx + 1];
-            else return score >= item
-        }) + 1;
+        const levelTiers = this.state.levelTiers;
 
-        if (this.state.get('level') == currentLevel) return;
+        const currentLevel = levelTiers.find((item, idx) => {
+            if (levelTiers[idx + 1]) {
+                return score >= item.scoreNeeded && score < levelTiers[idx + 1].scoreNeeded;
+            }
+            else return score >= item.scoreNeeded
+        });
+
+        if (this.state.get('level').level == currentLevel.level) return;
 
         this.state.set('level', currentLevel);
-
-        const level = this.state.get('level');
-        const spawnRate = this.state.get('originalSpawnRate');
-        const dropSpeed = this.state.get('originalDropSpeed');
-
-        const newSpawnRate = spawnRate - ((level - 1) * this.state.get('spawnRateChg'));
-        const newDropSpeed = dropSpeed + ((level - 1) * this.state.get('dropRateChg'));
-        this.state.set('spawnRate', newSpawnRate);
-        this.state.set('dropSpeed', newDropSpeed);
-
-        this.hud.setText('level', level);
+        this.hud.setText('level', currentLevel.level);
     }
 
     setHighScore() {
@@ -186,8 +222,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     //interaction methods
-    reduceLife(n: number) {
-        const life = this.state.get('life') - n;
+    modifyLife(n: number) {
+        const life = this.state.get('life') + n;
         this.state.set('life', life);
         this.hud.setText('life', life);
 
@@ -196,8 +232,8 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
-    starFall(pit, star) {
-        star.destroy();
+    destroyFallenObject(pit, obj) {
+        obj.destroy();
     }
 
     starCollect(pit, star) {
@@ -210,15 +246,27 @@ export class GameScene extends Phaser.Scene {
         this.setLevel();
     }
 
-    bombFall(pit, bomb) {
-        bomb.destroy();
+    bombCollect(player, bomb) {
+        if (this.player.stats.immune === false) {
+            bomb.destroy();
+            this.modifyLife(-1);
+
+            this.player.stats.immune = true;
+            player.setTint("0xff0000");
+            setTimeout(() => {
+                this.player.stats.immune = false;
+                player.clearTint()
+            }, 1000);
+        }
     }
 
-    bombCollect(player, bomb) {
-        bomb.destroy();
-        this.reduceLife(1);
+    heartCollect(player, heart) {
+        heart.destroy();
+        this.modifyLife(1);
 
-        player.setTint("0xff0000");
-        setTimeout(() => player.clearTint(), 1000);
+        player.setTint("0xff80b0");
+        setTimeout(() => {
+            player.clearTint()
+        }, 1000);
     }
 }
