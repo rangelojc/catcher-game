@@ -20,7 +20,7 @@ export default [
         scoreNeeded: 10,
         spawnRate: 750,
         dropSpeed: 700,
-        bombSpawnChance: 20,
+        bombSpawnChance: 10,
         lifeSpawnChance: 0,
     },
     {
@@ -28,7 +28,7 @@ export default [
         scoreNeeded: 20,
         spawnRate: 700,
         dropSpeed: 800,
-        bombSpawnChance: 20,
+        bombSpawnChance: 10,
         lifeSpawnChance: 0,
     },
     {
@@ -36,7 +36,7 @@ export default [
         scoreNeeded: 35,
         spawnRate: 600,
         dropSpeed: 900,
-        bombSpawnChance: 25,
+        bombSpawnChance: 20,
         lifeSpawnChance: 0,
     },
     {
@@ -60,7 +60,7 @@ export default [
         scoreNeeded: 90,
         spawnRate: 400,
         dropSpeed: 1100,
-        bombSpawnChance: 32,
+        bombSpawnChance: 30,
         lifeSpawnChance: 5,
     },
     {
@@ -68,7 +68,7 @@ export default [
         scoreNeeded: 110,
         spawnRate: 300,
         dropSpeed: 1200,
-        bombSpawnChance: 32,
+        bombSpawnChance: 35,
         lifeSpawnChance: 4,
     },
     {
@@ -92,7 +92,7 @@ export default [
         scoreNeeded: 350,
         spawnRate: 100,
         dropSpeed: 1400,
-        bombSpawnChance: 45,
+        bombSpawnChance: 50,
         lifeSpawnChance: 1,
     },
     {
