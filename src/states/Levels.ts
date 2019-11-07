@@ -73,7 +73,7 @@ export default [
     },
     {
         level: 10,
-        scoreNeeded: 130,
+        scoreNeeded: 140,
         spawnRate: 200,
         dropSpeed: 1300,
         bombSpawnChance: 35,
@@ -81,7 +81,7 @@ export default [
     },
     {
         level: "Master",
-        scoreNeeded: 160,
+        scoreNeeded: 200,
         spawnRate: 140,
         dropSpeed: 1350,
         bombSpawnChance: 40,
@@ -89,19 +89,19 @@ export default [
     },
     {
         level: "Legendary",
-        scoreNeeded: 250,
+        scoreNeeded: 350,
         spawnRate: 100,
         dropSpeed: 1400,
         bombSpawnChance: 45,
-        lifeSpawnChance: 2,
+        lifeSpawnChance: 1,
     },
     {
         level: "God",
-        scoreNeeded: 400,
+        scoreNeeded: 550,
         spawnRate: 75,
         dropSpeed: 1450,
         bombSpawnChance: 50,
-        lifeSpawnChance: 2,
+        lifeSpawnChance: 1,
     },
     {
         level: "MAXIMUM OVERLOAD!!!",
@@ -109,6 +109,6 @@ export default [
         spawnRate: 50,
         dropSpeed: 1500,
         bombSpawnChance: 60,
-        lifeSpawnChance: 2,
+        lifeSpawnChance: 1,
     },
 ]

@@ -256,7 +256,7 @@ export class GameScene extends Phaser.Scene {
             setTimeout(() => {
                 this.player.stats.immune = false;
                 player.clearTint()
-            }, 1000);
+            }, 500);
         }
     }
 
